@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Agents of Chaos — Secure Access</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#000000" />
+  <style>
+    /* ========= Base reset ========= */
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%}
+    body{
+      font-family: "Inter", "Courier New", monospace;
+      background:#040404;
+      color:#eef0f1;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:32px;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+
+    /* ========= CARD ========= */
+    .card{
+      width:980px;
+      max-width:100%;
+      background:linear-gradient(180deg,#0f0f10 0%,#141416 100%);
+      border-radius:14px;
+      border:1px solid rgba(196,0,47,0.18);
+      box-shadow:0 8px 40px rgba(0,0,0,0.7),0 0 48px rgba(196,0,47,0.06) inset;
+      overflow:hidden;
+      display:grid;
+      grid-template-columns:360px 1fr;
+      gap:0;
+    }
+
+    /* ========= LEFT PANEL ========= */
+    .left {
+      padding:28px;
+      background:
+        radial-gradient(1200px 200px at 10% 10%, rgba(196,0,47,0.05), transparent 8%),
+        linear-gradient(180deg,#0b0b0b,#101010);
+      border-right:1px solid rgba(255,255,255,0.02);
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:18px;
+    }
+
+    /* rotating logo container */
+    .logo-wrap{
+      width:160px;height:160px;
+      display:flex;align-items:center;justify-content:center;
+      border-radius:50%;
+      background:linear-gradient(180deg, rgba(196,0,47,0.06), transparent);
+      box-shadow:0 6px 24px rgba(196,0,47,0.06), inset 0 1px 0 rgba(255,255,255,0.02);
+      position:relative;
+    }
+
+    /* logo (use your uploaded image here) */
+    .logo{
+      width:118px;height:118px;
+      border-radius:50%;
+      background:#c4002f;
+      display:block;
+      background-size:contain;
+      background-position:center;
+      background-repeat:no-repeat;
+      filter:drop-shadow(0 6px 18px rgba(196,0,47,0.22));
+      transform-origin:center center;
+      animation:spin 8.5s linear infinite;
+    }
+    @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+
+    /* subtle outer ring glow */
+    .logo-wrap::after{
+      content:"";
+      position:absolute;inset:-6px;border-radius:50%;
+      box-shadow:0 0 36px rgba(196,0,47,0.10);
+      pointer-events:none;
+    }
+
+    /* Motto */
+    .motto{
+      font-size:12px;
+      line-height:1.35;
+      color:#ffeab3;
+      text-align:center;
+      max-width:220px;
+      letter-spacing:0.6px;
+    }
+
+    /* Title */
+    .brand{
+      font-size:18px;
+      font-weight:700;
+      color:#ff4b4b;
+      text-shadow:0 0 10px rgba(255,75,75,0.12);
+      letter-spacing:1px;
+    }
+
+    /* small stats / quick info */
+    .info{
+      width:100%;
+      margin-top:6px;
+      display:flex;
+      gap:8px;
+      flex-direction:column;
+      align-items:stretch;
+    }
+    .stat{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding:10px 12px;
+      border-radius:8px;
+      background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));
+      border:1px solid rgba(196,0,47,0.06);
+      font-size:13px;
+    }
+    .chip{color:#ffd87a;font-weight:600}
+
+    /* ========= RIGHT PANEL ========= */
+    .right{
+      padding:28px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+
+    /* header area (login or welcome) */
+    .header-row{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+    }
+    .header-left{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+    .title-main{
+      font-size:20px;
+      color:#ff3b46;
+      letter-spacing:1px;
+      display:flex;align-items:center;gap:10px;
+    }
+
+    /* animated glitch text for "AGENTS OF CHAOS" */
+    .glitch{
+      position:relative;
+      display:inline-block;
+      font-weight:800;
+      color:#ff3b46;
+    }
+    .glitch::before, .glitch::after{
+      content:attr(data-text);
+      position:absolute;left:0;top:0;clip-path:polygon(0 0,100% 0,100% 0,0 0);
+      width:100%;
+      animation:glitch-scan 2s infinite linear;
+      opacity:0.75;
+    }
+    .glitch::before{color:#ffe600;mix-blend-mode:screen;animation-duration:2.2s;transform:translateX(-2px)}
+    .glitch::after{color:#00f6ff;mix-blend-mode:screen;animation-duration:1.8s;transform:translateX(2px);opacity:0.45}
+    @keyframes glitch-scan{
+      0%{clip-path:polygon(0 2%,100% 2%,100% 2%,0 2%)}
+      10%{clip-path:polygon(0 22%,100% 22%,100% 22%,0 22%)}
+      30%{clip-path:polygon(0 12%,100% 12%,100% 12%,0 12%)}
+      50%{clip-path:polygon(0 52%,100% 52%,100% 52%,0 52%)}
+      70%{clip-path:polygon(0 42%,100% 42%,100% 42%,0 42%)}
+      90%{clip-path:polygon(0 82%,100% 82%,100% 82%,0 82%)}
+      100%{clip-path:polygon(0 2%,100% 2%,100% 2%,0 2%)}
+    }
+
+    .subtle{font-size:13px;color:#d1d1d1}
+
+    /* login form */
+    .login{
+      margin-top:6px;
+      display:flex;
+      gap:12px;
+      align-items:center;
+    }
+    .input{
+      flex:1;
+      padding:10px 12px;
+      border-radius:8px;
+      background:#0f0f10;
+      border:1px solid rgba(255,255,255,0.03);
+      color:#fff;font-size:14px;
+      outline:none;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,0.02);
+    }
+    .btn{
+      padding:10px 14px;border-radius:8px;border:none;background:linear-gradient(180deg,#c4002f,#8f001b);color:#fff;font-weight:700;cursor:pointer;
+      box-shadow:0 6px 18px rgba(196,0,47,0.12);
+    }
+    .hint{font-size:12px;color:#b6b6b6;margin-top:6px}
+
+    /* status message */
+    .status{
+      margin-top:8px;font-size:13px;height:20px;color:#ffb3b3;
+      min-height:20px;
+    }
+
+    /* dashboard (hidden until auth) */
+    .dash{
+      margin-top:10px;
+      display:none;
+      gap:14px;
+      flex-direction:column;
+    }
+    .dash.show{display:flex}
+
+    .welcome{
+      display:flex;align-items:center;gap:12px;
+    }
+    .welcome .avatar{
+      width:56px;height:56px;border-radius:10px;background:linear-gradient(180deg,#111,#0a0a0a);border:1px solid rgba(255,255,255,0.03);
+      display:flex;align-items:center;justify-content:center;font-weight:800;color:#ffd9b3;
+      box-shadow:0 8px 20px rgba(0,0,0,0.6);
+    }
+    .welcome h3{font-size:16px;color:#ffeab3;margin:0}
+    .welcome p{font-size:13px;color:#cfcfcf;margin:0}
+
+    /* two-column content inside dashboard */
+    .cols{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+      margin-top:10px;
+    }
+
+    /* chain of command box */
+    .box{
+      background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));
+      border-radius:10px;padding:12px;border:1px solid rgba(196,0,47,0.06);
+      min-height:120px;
+    }
+    .box h4{margin-bottom:8px;color:#ffd87a}
+    .rank-list{display:flex;flex-direction:column;gap:6px;max-height:220px;overflow:auto;padding-right:6px}
+    .rank-item{display:flex;justify-content:space-between;align-items:center;padding:8px;border-radius:8px;background:rgba(0,0,0,0.12);font-size:13px}
+    .rank-item .id{color:#d1d1d1;font-weight:700}
+    .rank-item .xp{color:#ffd87a;font-weight:700}
+
+    /* promotion panel */
+    .promo{
+      display:flex;flex-direction:column;gap:8px;
+    }
+    .promo .progress{
+      height:12px;background:#0b0b0b;border-radius:8px;overflow:hidden;border:1px solid rgba(255,255,255,0.02)
+    }
+    .bar{height:100%;background:linear-gradient(90deg,#ffd87a,#ff4b4b);width:0%}
+    .promo .controls{display:flex;gap:8px;align-items:center}
+
+    /* terminal feed */
+    .feed{background:#060606;border-radius:8px;padding:10px;border:1px solid rgba(255,255,255,0.02);font-family:monospace;font-size:13px;color:#9fb0c7;height:160px;overflow:auto}
+
+    /* small responsive */
+    @media (max-width:980px){
+      .card{grid-template-columns:1fr;gap:0}
+      .left{order:2;padding:18px}
+      .right{order:1;padding:18px}
+      .cols{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card" role="application" aria-label="Agents of Chaos Terminal">
+    <!-- LEFT -->
+    <aside class="left" aria-hidden="false">
+      <div class="logo-wrap" title="Agents of Chaos">
+        <!-- IMPORTANT: Replace the background-image value below with the path/URL of your uploaded logo.
+             Example: document.querySelector('.logo').style.backgroundImage = 'url("/path/to/your-logo.png")'
+             or set inline here as: style="background-image:url(YOUR_URL)" -->
+        <div class="logo" id="logo"></div>
+      </div>
+
+      <div class="brand">AGENTS OF CHAOS</div>
+      <div class="motto">Libertas Sculpta in Probitate — Freedom Carved in Resolve</div>
+
+      <div class="info" aria-hidden="false">
+        <div class="stat"><div>NODE</div><div class="chip">AX‑01</div></div>
+        <div class="stat"><div>CHANNEL</div><div class="chip">SECURE</div></div>
+        <div class="stat"><div>SESSION</div><div id="session-state" class="chip">LOCKED</div></div>
+      </div>
+      <div style="flex:1"></div>
+      <div style="font-size:11px;color:#8b8b8b;text-align:center">© 2025 Agents of Chaos Division</div>
+    </aside>
+
+    <!-- RIGHT -->
+    <main class="right">
+      <div class="header-row">
+        <div class="header-left">
+          <div class="title-main"><span class="glitch" data-text="AGENTS OF CHAOS">AGENTS OF CHAOS</span></div>
+          <div class="subtle">Insurgency Division • Operational Terminal</div>
+        </div>
+
+        <div style="min-width:300px">
+          <div class="login" role="form" aria-label="Security clearance">
+            <input id="code" class="input" placeholder="SECURITY CLEARANCE CODE" aria-label="security code" />
+            <button id="auth" class="btn" aria-label="authenticate">AUTHENTICATE</button>
+          </div>
+          <div class="hint">Hint: Contact High Command for override clearance.</div>
+          <div id="status" class="status" role="status" aria-live="polite"></div>
+        </div>
+      </div>
+
+      <!-- Dashboard (hidden until auth) -->
+      <div id="dashboard" class="dash" aria-hidden="true">
+        <div class="welcome">
+          <div class="avatar"></div>
+          <div>
+            <h3 id="welcome-text">Welcome, Operator</h3>
+            <p id="welcome-sub" class="subtle">Access Level: CLASSIFIED • Modules unlocked</p>
+          </div>
+        </div>
+
+        <div class="cols" aria-live="polite">
+          <!-- Chain of Command -->
+          <div class="box">
+            <h4>Chain of Command</h4>
+            <div class="rank-list" id="rankList" role="list" aria-label="chain of command list">
+              <!-- populated by JS -->
+            </div>
+          </div>
+
+          <!-- Promotions & XP -->
+          <div class="box promo">
+            <h4>Promotion System</h4>
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div style="font-size:13px;color:#dfe6ff">Your XP</div>
+              <div style="font-weight:800;color:#ffd87a" id="xpValue">0 XP</div>
+            </div>
+            <div class="progress" aria-hidden="false" style="margin-top:10px">
+              <div class="bar" id="xpBar" style="width:0%"></div>
+            </div>
+
+            <div style="margin-top:10px;font-size:13px;color:#cfcfcf">
+              Next Rank: <span id="nextRank">First Operator</span>
+            </div>
+
+            <div class="controls" style="margin-top:12px;display:flex;gap:8px">
+              <button id="addXp" class="btn" style="flex:1;background:linear-gradient(180deg,#2e7d32,#1b5e20)">+ Add XP</button>
+              <button id="requestPromo" class="btn" style="flex:1;background:linear-gradient(180deg,#1976d2,#0b4f86)">Request Promotion</button>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:12px;margin-top:10px">
+          <div style="flex:1">
+            <div class="box">
+              <h4>Terminal Feed</h4>
+              <div id="feed" class="feed" aria-live="polite">
+                000:00:00 — Session initialized.<br/>
+              </div>
+            </div>
+          </div>
+
+          <div style="width:320px">
+            <div class="box">
+              <h4>Quick Actions</h4>
+              <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
+                <button id="openRoster" class="btn" style="background:linear-gradient(180deg,#8b008b,#4b004b)">Open Roster</button>
+                <button id="exportXP" class="btn" style="background:linear-gradient(180deg,#ff8a00,#b25b00)">Export XP</button>
+                <button id="lockOut" class="btn" style="background:linear-gradient(180deg,#8b0000,#4b0000)">Lock Terminal</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script>
+    /************************************************************************
+     * Agents of Chaos — Terminal behavior script
+     * - Simple client-side demo logic
+     * - Replace logoSrc with your uploaded image path/URL
+     * - Uses rank data from provided AOC text (embedded below)
+     ************************************************************************/
+
+    (function(){
+      "use strict";
+
+      /* ==============================
+         Config: set your logo file here
+         Replace with the path/URL of the uploaded emblem image
+         Example (after uploading to your web host or local dev):
+         const logoSrc = "/assets/aoc-emblem.png";
+         ============================== */
+      const logoSrc = "REPLACE_WITH_YOUR_LOGO_URL_OR_PATH.png";
+
+      /* ========== Rank data (sourced from attached file) ========== */
+      const ranks = [
+        { id: "017", name: "Head Commander", xp: 890 },
+        { id: "018", name: "Elite Commander", xp: 500 },
+        { id: "019", name: "Senior Commander", xp: 380 },
+        { id: "020", name: "Insurgency Commander", xp: 240 },
+        { id: "021", name: "Lieutenant Commander", xp: 135 },
+        { id: "023", name: "Chief Officer", xp: 2345 },
+        { id: "024", name: "High Officer I", xp: 2010 },
+        { id: "025", name: "High Officer II", xp: 1780 },
+        { id: "026", name: "High Officer III", xp: 1560 },
+        { id: "027", name: "Operator in Command", xp: 1230 },
+        { id: "028", name: "Deputy Operator Head", xp: 1020 },
+        { id: "029", name: "High Operator", xp: 770 },
+        { id: "030", name: "Elite Operator", xp: 450 },
+        { id: "031", name: "Senior Operator", xp: 380 },
+        { id: "032", name: "First Operator", xp: 330 },
+        { id: "033", name: "Second Operator", xp: 215 },
+        { id: "034", name: "Third Operator", xp: 175 },
+        { id: "035", name: "Fourth Operator", xp: 90 },
+        { id: "036", name: "Fifth Operator", xp: 35 }
+      ];
+
+      /* ========== State ========== */
+      let state = {
+        authenticated:false,
+        xp: 120, // demo starting XP
+        userRankIndex: 15, // corresponding to "Second Operator" demo index
+        attempts:0
+      };
+
+      /* ========== Elements ========== */
+      const els = {
+        logo: document.getElementById('logo'),
+        code: document.getElementById('code'),
+        auth: document.getElementById('auth'),
+        status: document.getElementById('status'),
+        dash: document.getElementById('dashboard'),
+        sessionState: document.getElementById('session-state'),
+        welcomeText: document.getElementById('welcome-text'),
+        welcomeSub: document.getElementById('welcome-sub'),
+        rankList: document.getElementById('rankList'),
+        xpValue: document.getElementById('xpValue'),
+        xpBar: document.getElementById('xpBar'),
+        nextRank: document.getElementById('nextRank'),
+        feed: document.getElementById('feed'),
+        addXpBtn: document.getElementById('addXp'),
+        reqPromoBtn: document.getElementById('requestPromo'),
+        openRoster: document.getElementById('openRoster'),
+        exportXP: document.getElementById('exportXP'),
+        lockOutBtn: document.getElementById('lockOut')
+      };
+
+      /* ========== Initialization ========== */
+      function init(){
+        // set logo background (user must replace logoSrc with a real URL/path)
+        if(logoSrc && !logoSrc.includes("REPLACE_WITH")){
+          els.logo.style.backgroundImage = `url("${logoSrc}")`;
+          els.logo.style.backgroundSize = 'cover';
+        } else {
+          // fallback: draw simple SVG inline if no logo URL provided
+          els.logo.innerHTML = `<svg viewBox="0 0 128 128" width="118" height="118" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 6px 18px rgba(196,0,47,0.22))">
+            <circle cx="64" cy="64" r="60" fill="#c4002f"></circle>
+            <g transform="translate(18,18)" fill="#010101">
+              <path d="M47 4L61 24 50 36 67 44 53 63 35 44 20 56 11 40 35 28 43 16z" opacity="0.98"></path>
+            </g>
+          </svg>`;
+          els.logo.style.backgroundColor = 'transparent';
+        }
+
+        renderRanks();
+        renderXP();
+        appendFeed("System ready. Terminal awaiting authentication.");
+      }
+
+      /* ========== Render Chain of Command ========== */
+      function renderRanks(){
+        els.rankList.innerHTML = "";
+        ranks.slice(0,12).forEach((r, i) => {
+          const item = document.createElement('div');
+          item.className = 'rank-item';
+          item.innerHTML = `<div><div style="font-weight:700">${r.name}</div><div style="font-size:12px;color:#bfbfbf">ID: ${r.id}</div></div><div class="xp">${r.xp} XP</div>`;
+          els.rankList.appendChild(item);
+        });
+
+        // also append a collapsible "more" showing remaining ranks
+        const more = document.createElement('details');
+        more.style.marginTop='8px';
+        more.innerHTML = `<summary style="cursor:pointer;color:#ffd87a">View full rank listing</summary>`;
+        const list = document.createElement('div');
+        list.style.marginTop='8px';
+        ranks.slice(12).forEach(r=>{
+          const li = document.createElement('div');
+          li.className='rank-item';
+          li.style.marginBottom='6px';
+          li.innerHTML = `<div><div style="font-weight:700">${r.name}</div><div style="font-size:12px;color:#bfbfbf">ID: ${r.id}</div></div><div class="xp">${r.xp} XP</div>`;
+          list.appendChild(li);
+        });
+        more.appendChild(list);
+        els.rankList.appendChild(more);
+      }
+
+      /* ========== XP rendering & promotion logic ========== */
+      function renderXP(){
+        els.xpValue.textContent = `${state.xp} XP`;
+        // compute next rank
+        let next = ranks.find(r=> r.xp > state.xp);
+        if(!next){
+          els.nextRank.textContent = "Max Rank";
+          els.xpBar.style.width = "100%";
+        } else {
+          els.nextRank.textContent = next.name;
+          // progress percent between previous rank xp and next rank xp
+          const prevXp = ranks.filter(r=> r.xp < next.xp).reduce((a,b)=> b.xp, 0) || 0;
+          const pct = Math.round(((state.xp - prevXp) / Math.max(1, (next.xp - prevXp))) * 100);
+          const clamped = Math.max(0, Math.min(100, pct));
+          els.xpBar.style.width = `${clamped}%`;
+        }
+      }
+
+      /* ========== Feed helper ========== */
+      function appendFeed(text){
+        const t = new Date();
+        const ts = t.toISOString().slice(11,19);
+        els.feed.innerHTML += `${ts} — ${text}<br/>`;
+        els.feed.scrollTop = els.feed.scrollHeight;
+      }
+
+      /* ========== Authentication ==========
+         The user requested a specific password:
+         "Glory-to-AOC-2014814601"
+      */
+      const REAL_PASS = "Glory-to-AOC-2014814601";
+
+      function setLocked(locked){
+        els.sessionState.textContent = locked ? "LOCKED" : "ACTIVE";
+        els.sessionState.style.background = locked ? "transparent" : "linear-gradient(90deg,#ffd87a,#ff4b4b)";
+        if(locked){
+          els.sessionState.style.color = "#ffd87a";
+        } else {
+          els.sessionState.style.color = "#0b0b0b";
+        }
+      }
+
+      async function tryAuth(){
+        const val = els.code.value.trim();
+        if(!val){
+          els.status.textContent = "Enter clearance code.";
+          return;
+        }
+        // Basic attempt limiter
+        state.attempts++;
+        if(state.attempts > 6){
+          els.status.textContent = "Too many failed attempts. Terminal locked for 10s.";
+          appendFeed("Security: multiple failed auth attempts. Temporary lockout.");
+          els.auth.disabled = true;
+          setTimeout(()=>{ els.auth.disabled=false; state.attempts=0; els.status.textContent="";},10000);
+          return;
+        }
+
+        if(val === REAL_PASS){
+          // success path
+          state.authenticated = true;
+          els.status.style.color = "#9bffb3";
+          els.status.textContent = "Access Granted — Welcome, Operator.";
+          appendFeed(`Authentication accepted for operator session.`);
+          setLocked(false);
+          // show dashboard with smooth reveal
+          setTimeout(()=>{
+            els.dash.classList.add('show');
+            document.getElementById('dashboard').setAttribute('aria-hidden','false');
+            els.welcomeText.textContent = "Welcome, Operator";
+            els.welcomeSub.textContent = "Access Level: CLASSIFIED • Modules unlocked";
+            // small entrance feed
+            appendFeed("Dashboard unlocked. Chain of Command loaded.");
+          },420);
+        } else {
+          // failure path with glitchy UI cue
+          els.status.style.color = "#ff9b9b";
+          els.status.textContent = "Invalid clearance code.";
+          appendFeed("Authentication failed: invalid credential.");
+          // small shake animation
+          shake(els.code, 220);
+        }
+        // clear input for security
+        els.code.value = "";
+      }
+
+      /* shake helper */
+      function shake(node,dur=260){
+        node.animate([{transform:'translateX(0)'},{transform:'translateX(-6px)'},{transform:'translateX(6px)'},{transform:'translateX(0)'}],{duration:dur,iterations:1});
+      }
+
+      /* Event wiring */
+      els.auth.addEventListener('click', tryAuth);
+      els.code.addEventListener('keydown', function(e){
+        if(e.key === "Enter") tryAuth();
+      });
+
+      /* Add XP button (demo only) */
+      const addXp = document.getElementById('addXp');
+      addXp && addXp.addEventListener('click', ()=>{
+        const inc = Math.floor(Math.random()*40)+10;
+        state.xp += inc;
+        renderXP();
+        appendFeed(`XP awarded: +${inc} (field credit)`);
+      });
+
+      /* Request promotion (demo) */
+      document.getElementById('requestPromo').addEventListener('click', ()=>{
+        appendFeed("Promotion request submitted to Command for review.");
+        alert("Promotion request sent. This demo does not perform real promotions.");
+      });
+
+      /* Quick action buttons (demo behaviors) */
+      els.openRoster.addEventListener('click', ()=>{
+        appendFeed("Operator roster opened.");
+        alert("Roster: view the Chain of Command on the left panel (demo).");
+      });
+      els.exportXP.addEventListener('click', ()=>{
+        appendFeed("XP ledger export initiated.");
+        alert("XP exported (demo).");
+      });
+      els.lockOutBtn.addEventListener('click', ()=>{
+        // lock interface
+        state.authenticated=false;
+        document.getElementById('dashboard').classList.remove('show');
+        setLocked(true);
+        appendFeed("Terminal manually locked by operator.");
+        els.status.textContent = "Terminal locked.";
+      });
+
+      /* keyboard debug: Alt+D to auto-fill password (developer convenience) */
+      document.addEventListener('keydown', function(e){
+        if(e.altKey && e.key.toLowerCase()==='d'){
+          els.code.value = REAL_PASS;
+          appendFeed("Debug: password autofill used.");
+        }
+      });
+
+      /* populate initial feed and UI */
+      init();
+      setLocked(true);
+      renderXP();
+
+    })();
+  </script>
+</body>
+</html>
